@@ -25,3 +25,31 @@ ENV = {"LD_PRELOAD": LIBC} if LIBC else {}
 ELF_LOADED = ELF(LOCAL_BIN)# Extract data from binary
 ROP_LOADED = ROP(ELF_LOADED)# Find ROP gadgets
 
+
+def localProcessStart():
+  io = process(LOCAL_BIN, env=ENV)
+  if GDB:
+      # Optionally attach gdb if debugging is enabled
+      gdb.attach(io)
+  log.info("[+] Local process started.")
+  return io
+
+def GoToVulnInput(io = None):
+  if not io:
+    io = localProcessStart()
+  io.recvline()
+  io.sendline(b"1")
+  io.recvuntil(b"")
+  log.info("[+] Reached vulnerable input prompt.")
+  return io
+
+
+
+
+
+  
+
+
+
+
+
